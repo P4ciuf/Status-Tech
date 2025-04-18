@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechTribe Studio | Services Status</title>
+    <link rel="icon" type="" href="./Img server.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #1e40af;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --maintenance: #8b5cf6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --button-bg: #f0f0f0;
+            --button-border: #cccccc;
+            --button-hover: #e0e0e0;
+            --toggle-bg: #ffffff;
+            --toggle-border: #cccccc;
+            --toggle-color: #333333;
+            --transition-time: 0.3s;
+        }
+
+        .dark-theme {
+            --background-color: #121212;
+            --text-color: #e0e0e0;
+            --button-bg: #2d2d2d;
+            --button-border: #444444;
+            --button-hover: #3d3d3d;
+            --toggle-bg: #333333;
+            --toggle-border: #444444;
+            --toggle-color: #e0e0e0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/Banner.png') center/100% no-repeat;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        header .container {
+            position: relative;
+            z-index: 1;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }     
+        .brand-icon {
+            font-size: 2.5rem;
+            margin-right: 0.5rem;
+        }
+        .brand-text h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.5px;
+        }
+        .brand-tagline {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .content-container {
+            max-width: 1200px;
+            margin: -3rem auto 0;
+            position: relative;
+            z-index: 10;
+            padding: 0 1.5rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        h2 i {
+            color: var(--primary);
+        }
+        .section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+        .service-card {
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background-color: #ccc;
+        }
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .service-card.active::before {
+            background-color: var(--success);
+        }
+        .service-card.offline::before {
+            background-color: var(--danger);
+        }
+        .service-card.slow::before {
+            background-color: var(--warning);
+        }
+        .service-card.maintenance::before {
+            background-color: var(--maintenance);
+        }
+        .service-card.active {
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.05), transparent);
+        }
+        .service-card.offline {
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.05), transparent);
+        }
+        .service-card.slow {
+            background: linear-gradient(to right, rgba(245, 158, 11, 0.05), transparent);
+        }
+        .service-card.maintenance {
+            background: linear-gradient(to right, rgba(139, 92, 246, 0.05), transparent);
+        }
+        .service-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            gap: 0.35rem;
+        }
+        .status-badge.active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .status-badge.offline {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .status-badge.slow {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-badge.maintenance {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: var(--maintenance);
+        }
+        
+        .service-details {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .service-note {
+            font-style: italic;
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background-color: rgba(59, 130, 246, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 2rem;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary), var(--info));
+            top: 0;
+            bottom: 0;
+            left: 16px;
+            border-radius: 100px;
+        }
+        
+        .log-item {
+            padding: 0.75rem 0 1.5rem 2rem;
+            position: relative;
+        }
+        
+        .log-content {
+            padding: 1.25rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .log-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+        
+        .log-item.bug-fix .log-content {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .log-item.update .log-content {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .log-item.patch .log-content {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .log-item::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 8px;
+            background-color: white;
+            border: 3px solid var(--primary);
+            top: 24px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.1);
+        }
+        
+        .log-item.bug-fix::after {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.1);
+        }
+        
+        .log-item.update::after {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.1);
+        }
+        
+        .log-item.patch::after {
+            border-color: var(--warning);
+            box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.1);
+        }
+        
+        .log-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .log-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .log-date i {
+            color: var(--primary);
+        }
+        
+        .log-type {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            gap: 0.35rem;
+        }
+        
+        .log-type.bug-fix {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .log-type.update {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+        
+        .log-type.patch {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .log-description {
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        .maintenance-table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        .maintenance-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .maintenance-table th, .maintenance-table td {
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .maintenance-table th {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .maintenance-table tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+        
+        .maintenance-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .maintenance-table tr:nth-child(even) {
+            background-color: rgba(59, 130, 246, 0.02);
+        }
+        
+        .maintenance-table tr:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        
+        .maintenance-date, .maintenance-time {
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        
+        .maintenance-service {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .alert-banner {
+            background: linear-gradient(to right, var(--danger), #f43f5e);
+            color: white;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.25);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alert-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/api/placeholder/400/100') center/cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .alert-banner i {
+            font-size: 1.75rem;
+            margin-right: 1.25rem;
+        }
+        
+        .alert-banner.maintenance {
+            background: linear-gradient(to right, var(--maintenance), #9333ea);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.25);
+        }
+        
+        .alert-banner.offline {
+            background: linear-gradient(to right, var(--danger), #f43f5e);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.25);
+        }
+        
+        .alert-content {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        
+        .alert-message {
+            font-weight: 500;
+            flex-grow: 1;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .last-update {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .last-update i {
+            color: var(--primary);
+        }
+        
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 2rem 1rem;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-title i {
+            color: var(--primary);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        
+        .active-stat .stat-value {
+            color: var(--success);
+        }
+        
+        .offline-stat .stat-value {
+            color: var(--danger);
+        }
+        
+        .load-stat .stat-value {
+            color: var(--primary);
+        }
+        
+        .maintenance-stat .stat-value {
+            color: var(--maintenance);
+        }
+        
+        @media (max-width: 1024px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline {
+                padding-left: 1rem;
+            }
+            
+            .timeline::after {
+                left: 12px;
+            }
+            
+            .log-item {
+                padding-left: 1.5rem;
+            }
+            
+            .log-item::after {
+                left: 4px;
+                width: 16px;
+                height: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-name {
+                font-size: 1.1rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h1>TechTribe Studio | Services Status</h1>
+                        <div class="brand-tagline">Monitoraggio in tempo reale dello stato dei servizi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="content-container">
+        <div id="alertBanner" class="alert-banner">
+            <div class="alert-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span class="alert-message">Alcuni servizi sono attualmente non disponibili. Stiamo lavorando per risolvere il problema.</span>
+            </div>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-card active-stat">
+                <div class="stat-title"><i class="fas fa-check-circle"></i> Servizi Attivi</div>
+                <div class="stat-value" id="activeServicesCount">0</div>
+                <div class="stat-label">Funzionanti correttamente</div>
+            </div>
+            <div class="stat-card offline-stat">
+                <div class="stat-title"><i class="fas fa-times-circle"></i> Servizi Offline</div>
+                <div class="stat-value" id="offlineServicesCount">0</div>
+                <div class="stat-label">Attualmente non disponibili</div>
+            </div>
+            <div class="stat-card maintenance-stat">
+                <div class="stat-title"><i class="fas fa-tools"></i> In Manutenzione</div>
+                <div class="stat-value" id="maintenanceServicesCount">0</div>
+                <div class="stat-label">Manutenzione in corso</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-tachometer-alt"></i> Carico Sistema</div>
+                <div class="stat-value" id="systemLoad">36%</div>
+                <div class="stat-label">Utilizzo risorse</div>
+            </div>
+            <script>
+                function updateSystemLoad() {
+                    const randomLoad = Math.floor(Math.random() * 100) + 1;
+                    const systemLoadElement = document.getElementById('systemLoad');
+                    systemLoadElement.textContent = randomLoad + '%';
+                    if (randomLoad < 40) {
+                        systemLoadElement.className = 'stat-value low';
+                    } else if (randomLoad < 70) {
+                        systemLoadElement.className = 'stat-value medium';
+                    } else {
+                        systemLoadElement.className = 'stat-value high';
+                    }
+                }
+                setInterval(updateSystemLoad, 1009000);
+                updateSystemLoad();
+            </script>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> Stato dei Servizi</h2>
+                <div class="last-update"><i class="fas fa-sync-alt"></i> Aggiornamento: <span id="lastUpdateTime"></span></div>
+            </div>
+            <div id="serviceGrid" class="service-grid">
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Log degli Aggiornamenti</h2>
+            </div>
+            <div id="updateLog" class="timeline">
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-alt"></i> Manutenzioni Programmate</h2>
+            </div>
+            <div class="maintenance-table-wrapper">
+                <table class="maintenance-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Orario</th>
+                            <th>Servizio</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="maintenanceTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-content">
+            <p>© 2025 TechTribe Studio | Services Status</p>
+            <div class="footer-links">
+                <a href="https://discord.com/channels/1212788183079714846/1213582213606801418" class="footer-link" target="_blank" rel="noopener noreferrer">Supporto</a>
+                <a href="https://discord.com/channels/1212788183079714846/1296076263353614346" class="footer-link" target="_blank" rel="noopener noreferrer">Segnala un problema</a>                
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeLabel = document.getElementById('themeLabel');
+            
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.body.classList.add('dark-theme');
+                themeToggle.checked = true;
+                themeLabel.textContent = 'Tema Scuro';
+            }
+            
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    document.body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                    themeLabel.textContent = 'Tema Scuro';
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeLabel.textContent = 'Tema Chiaro';
+                }
+            });
+        });
+    </script>
+
+<script>
+    const servicesData = [
+    {
+        "nome": "TechTribe Studio - AI (Discord)",
+        "stato": "attivo",
+        "aggiornamento": '',
+        "note": "Funzionamento regolare",
+        "previousStato": "attivo"
+    },
+    {
+        "nome": "TechTribe Studio - Preventive System",
+        "stato": "attivo",
+        "aggiornamento": '',
+        "note": "Funzionamento regolare",
+        "previousStato": "attivo"
+    },
+    {
+        "nome": "TechTribe Studio - Hardware",
+        "stato": "attivo",
+        "aggiornamento": '',
+        "note": "Funzionamento regolare",
+        "previousStato": "attivo"
+    },
+    {
+        "nome": "TechTribe Studio - Ticket",
+        "stato": "attivo",
+        "aggiornamento": '',
+        "note": "Funzionamento regolare",
+        "previousStato": "attivo"
+    },
+];
+
+const CONFIG = {
+    updateInterval: 60 * 1000, 
+    dateFormat: {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    },
+    locale: 'it-IT',
+    authorizedUsers: ['P4ciuf', 'SingGPT', 'Ninja'],
+    password: ['3827487', '8732847', 'TechTribeStudioAdmin']
+};
+
+const STATUS_META = {
+    'attivo': { 
+        emoji: '🟢', 
+        icon: 'fas fa-check-circle', 
+        class: 'attivo' 
+    },
+    'offline': { 
+        emoji: '🔴', 
+        icon: 'fas fa-times-circle', 
+        class: 'offline' 
+    },
+    'lento': { 
+        emoji: '🟡', 
+        icon: 'fas fa-exclamation-circle', 
+        class: 'lento' 
+    },
+    'manutenzione': { 
+        emoji: '🛠️', 
+        icon: 'fas fa-tools', 
+        class: 'manutenzione' 
+    }
+};
+
+const LOG_TYPE_META = {
+    'Bug Fix': { icon: 'fas fa-bug' },
+    'Update': { icon: 'fas fa-upload' },
+    'Patch': { icon: 'fas fa-wrench' },
+    'Stato': { icon: 'fas fa-info-circle' },
+    'Manutenzione': { icon: 'fas fa-tools' }  
+};
+
+const updateLogData = [
+    {
+        "data": "17/04/2025",
+        "tipo": "Patch",
+        "descrizione": "Aggiornato il bot TechTribe Studio - AI: reso più potente, con meno bug, correzioni minori e comandi personalizzati aggiunti per i piani Premium."
+    },
+    {
+        "data": "16/04/2025",
+        "tipo": "Bug Fix",
+        "descrizione": "Sistemata la chiusura dei ticket e la generazione dei transcript."
+    }
+];
+
+const maintenanceData = [
+    {
+        "data": "21/04/2025",
+        "ora": "18:00 - 19:30",
+        "servizio": "Services Status",
+        "motivo": "Upgrade"
+    }
+];
+
+let currentUser = {
+    id: null,
+    isAuthenticated: false,
+    isAdmin: false
+};
+
+function saveDataToStorage() {
+    localStorage.setItem('servicesData', JSON.stringify(servicesData));
+    localStorage.setItem('updateLogData', JSON.stringify(updateLogData));
+    localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
+}
+
+function loadDataFromStorage() {
+    const savedServices = localStorage.getItem('servicesData');
+    const savedLogs = localStorage.getItem('updateLogData');
+    const savedMaintenances = localStorage.getItem('maintenanceData');
+    
+    if (savedServices) {
+        const parsedServices = JSON.parse(savedServices);
+        servicesData.length = 0; 
+        parsedServices.forEach(service => servicesData.push(service));
+    }
+    
+    if (savedLogs) {
+        const parsedLogs = JSON.parse(savedLogs);
+        updateLogData.length = 0; 
+        parsedLogs.forEach(log => updateLogData.push(log));
+    }
+    
+    if (savedMaintenances) {
+        const parsedMaintenances = JSON.parse(savedMaintenances);
+        maintenanceData.length = 0; 
+        parsedMaintenances.forEach(maintenance => maintenanceData.push(maintenance));
+    }
+}
+
+function getFormattedDateTime() {
+    const now = new Date();
+    return now.toLocaleString(CONFIG.locale, CONFIG.dateFormat).replace(',', '');
+}
+
+function aggiornaOrarioServizi() {
+    const orarioFormattato = getFormattedDateTime();
+    
+    servicesData.forEach(servizio => {
+        servizio.aggiornamento = orarioFormattato;
+    });
+    
+    console.log("Aggiornamento servizi:", servicesData);
+    renderServices();
+    updateStatistics();
+    updateAlertBanner();
+}
+
+function updateStatistics() {
+    const stats = {
+        attivo: servicesData.filter(service => service.stato === 'attivo').length,
+        offline: servicesData.filter(service => service.stato === 'offline').length,
+        manutenzione: servicesData.filter(service => service.stato === 'manutenzione').length,
+        lento: servicesData.filter(service => service.stato === 'lento').length
+    };
+    
+    const totalServices = servicesData.length;
+    const availablePercentage = Math.round((stats.attivo / totalServices) * 100);
+    
+    document.getElementById('activeServicesCount').textContent = stats.attivo;
+    document.getElementById('offlineServicesCount').textContent = stats.offline;
+    document.getElementById('maintenanceServicesCount').textContent = stats.manutenzione;
+    
+    const availabilityElement = document.getElementById('availabilityPercentage');
+    if (availabilityElement) {
+        availabilityElement.textContent = availablePercentage;
+    }
+}
+
+function renderServices() {
+    const serviceGrid = document.getElementById('serviceGrid');
+    if (!serviceGrid) return;
+    
+    serviceGrid.innerHTML = '';
+    
+    servicesData.forEach(service => {
+        const serviceCard = document.createElement('div');
+        const statusMeta = STATUS_META[service.stato] || STATUS_META.offline;
+        const statusText = service.stato.charAt(0).toUpperCase() + service.stato.slice(1);
+        
+        serviceCard.className = `service-card ${statusMeta.class}`;
+        
+        serviceCard.innerHTML = `
+            <div class="service-name">${service.nome}</div>
+            <div class="status-badge ${statusMeta.class}">
+                <i class="${statusMeta.icon}"></i> ${statusText}
+            </div>
+            <div class="service-details">
+                <i class="fas fa-clock"></i> ${service.aggiornamento}
+            </div>
+            <div class="service-note">${service.note}</div>
+        `;
+        
+        serviceGrid.appendChild(serviceCard);
+    });
+}
+
+function renderUpdateLog() {
+    const updateLog = document.getElementById('updateLog');
+    if (!updateLog) return;
+    
+    updateLog.innerHTML = '';
+    
+    updateLogData.forEach(log => {
+        const logItem = document.createElement('div');
+        const logType = log.tipo.toLowerCase().replace(' ', '-');
+        const logTypeMeta = LOG_TYPE_META[log.tipo] || { icon: 'fas fa-info-circle' };
+        
+        logItem.innerHTML = `
+            <div class="log-content">
+                <div class="log-header">
+                    <div class="log-date">
+                        <i class="fas fa-calendar-day"></i> ${log.data}
+                    </div>
+                    <div class="log-type ${logType}">
+                        <i class="${logTypeMeta.icon}"></i> ${log.tipo}
+                    </div>
+                </div>
+                <div class="log-description">${log.descrizione}</div>
+            </div>
+        `;
+        
+        updateLog.appendChild(logItem);
+    });
+}
+
+function renderMaintenances() {
+    const maintenanceTableBody = document.getElementById('maintenanceTableBody');
+    if (!maintenanceTableBody) return;
+    
+    maintenanceTableBody.innerHTML = '';
+    
+    maintenanceData.forEach(maintenance => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td class="maintenance-date">${maintenance.data}</td>
+            <td class="maintenance-time">${maintenance.ora}</td>
+            <td class="maintenance-service">${maintenance.servizio}</td>
+            <td>${maintenance.motivo}</td>
+        `;
+        
+        maintenanceTableBody.appendChild(row);
+    });
+}
+
+function updateLastUpdateTime() {
+    const formattedDate = getFormattedDateTime();
+    const lastUpdateElement = document.getElementById('lastUpdateTime');
+    
+    if (lastUpdateElement) {
+        lastUpdateElement.textContent = formattedDate;
+    }
+}
+
+function updateAlertBanner() {
+    const alertBanner = document.getElementById('alertBanner');
+    if (!alertBanner) return;
+    
+    const hasOfflineService = servicesData.some(service => service.stato === 'offline');
+    const hasMaintenanceService = servicesData.some(service => service.stato === 'manutenzione');
+    const hasSlowService = servicesData.some(service => service.stato === 'lento');
+    
+    if (hasOfflineService) {
+        alertBanner.style.display = 'flex';
+        alertBanner.className = 'alert-banner offline';
+        alertBanner.querySelector('.alert-message').textContent = 
+            `${servicesData.filter(s => s.stato === 'offline').length} servizi sono attualmente non disponibili. Stiamo lavorando per risolvere il problema.`;
+    } else if (hasMaintenanceService) {
+        alertBanner.style.display = 'flex';
+        alertBanner.className = 'alert-banner maintenance';
+        alertBanner.querySelector('.alert-message').textContent = 
+            'Attività di manutenzione in corso su alcuni servizi. Potrebbero verificarsi interruzioni temporanee.';
+    } else if (hasSlowService) {
+        alertBanner.style.display = 'flex';
+        alertBanner.className = 'alert-banner slow';
+        alertBanner.querySelector('.alert-message').textContent = 
+            'Alcuni servizi stanno riscontrando rallentamenti. Il team di sviluppatori sta monitorando la situazione.';
+    } else {
+        alertBanner.style.display = 'none';
+    }
+}
+
+function isUserAuthorized() {
+    return currentUser.isAuthenticated && currentUser.isAdmin;
+}
+
+function checkUserAuthorization(userId) {
+    return CONFIG.authorizedUsers.includes(userId);
+}
+
+function handleLogin(userId, password) {
+    const isAuthorized = checkUserAuthorization(userId);
+    
+    if (isAuthorized) {
+        currentUser = {
+            id: userId,
+            isAuthenticated: true,
+            isAdmin: true
+        };
+        
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        showAdminPanel();
+        return true;
+    }
+    
+    return false;
+}
+
+function handleLogout() {
+    currentUser = {
+        id: null,
+        isAuthenticated: false,
+        isAdmin: false
+    };
+    
+    sessionStorage.removeItem('currentUser');
+    
+    hideAdminPanel();
+    
+    createAdminButton();
+}
+
+function createAdminButton() {
+    const existingLoginForm = document.querySelector('.login-section');
+    if (existingLoginForm) {
+        existingLoginForm.remove();
+    }
+    
+    hideAdminPanel();
+    
+    const existingAdminButton = document.getElementById('adminButton');
+    if (existingAdminButton) {
+        existingAdminButton.remove();
+    }
+    
+    const adminButton = document.createElement('button');
+    adminButton.id = 'adminButton';
+    adminButton.innerHTML = '<i class="fas fa-cog"></i>';
+    adminButton.title = 'Accesso Admin';
+    
+    adminButton.addEventListener('click', showLoginForm);
+    
+    document.body.appendChild(adminButton);
+}
+
+function showLoginForm() {
+    const adminButton = document.getElementById('adminButton');
+    if (adminButton) {
+        adminButton.style.display = 'none';
+    }
+    
+    const existingLoginForm = document.querySelector('.login-section');
+    if (existingLoginForm) {
+        existingLoginForm.remove();
+    }
+    
+    const existingAdminPanel = document.querySelector('.management-section');
+    if (existingAdminPanel) {
+        existingAdminPanel.remove();
+    }
+    
+    const loginSection = document.createElement('div');
+    loginSection.className = 'login-section';
+    loginSection.innerHTML = `
+        <div class="admin-header">
+            <h2>Admin Access</h2>
+            <button id="closeLoginBtn" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="login-form">
+            <div class="form-group">
+                <label for="userIdInput">ID Utente:</label>
+                <input type="text" id="userIdInput" class="form-control" placeholder="Inserisci ID utente">
+            </div>
+            <div class="form-group">
+                <label for="passwordInput">Password:</label>
+                <input type="password" id="passwordInput" class="form-control" placeholder="Inserisci password">
+            </div>
+            <div class="login-buttons">
+                <button id="loginBtn" class="btn btn-primary">Accedi</button>
+                <button id="cancelLoginBtn" class="btn btn-secondary">Annulla</button>
+            </div>
+            <p id="loginError" class="error-message" style="display: none; color: red; margin-top: 10px;">ID utente o password non validi</p>
+        </div>
+    `;
+    
+    const modalContainer = document.createElement('div');
+    modalContainer.className = 'modal-container';
+    modalContainer.appendChild(loginSection);
+    
+    document.body.appendChild(modalContainer);
+    
+    document.getElementById('loginBtn').addEventListener('click', function() {
+        const userId = document.getElementById('userIdInput').value;
+        const password = document.getElementById('passwordInput').value;
+        
+        if (!userId || !password) {
+            document.getElementById('loginError').style.display = 'block';
+            return;
+        }
+        
+        const isLoggedIn = handleLogin(userId, password);
+        
+        if (!isLoggedIn) {
+            document.getElementById('loginError').style.display = 'block';
+        } else {
+            document.querySelector('.modal-container').remove();
+        }
+    });
+    
+    document.getElementById('closeLoginBtn').addEventListener('click', function() {
+        document.querySelector('.modal-container').remove();
+        createAdminButton();
+    });
+    
+    document.getElementById('cancelLoginBtn').addEventListener('click', function() {
+        document.querySelector('.modal-container').remove();
+        createAdminButton();
+    });
+}
+
+function showAdminPanel() {
+    createManagementUI();
+}
+
+function hideAdminPanel() {
+    const adminPanel = document.querySelector('.management-section');
+    if (adminPanel) {
+        adminPanel.remove();
+    }
+}
+
+function changeServiceStatus(serviceIndex, newStatus, customNote = "") {
+    if (!isUserAuthorized()) {
+        console.error("Utente non autorizzato");
+        return false;
+    }
+    
+    if (serviceIndex < 0 || serviceIndex >= servicesData.length) {
+        console.error("Indice servizio non valido");
+        return false;
+    }
+    
+    if (!STATUS_META[newStatus]) {
+        console.error("Stato non valido. Stati consentiti:", Object.keys(STATUS_META).join(", "));
+        return false;
+    }
+    
+    const service = servicesData[serviceIndex];
+    service.previousStato = service.stato;
+    service.stato = newStatus;
+    
+    if (customNote) {
+        service.note = customNote;
+    } else {
+        switch(newStatus) {
+            case 'attivo':
+                service.note = "Funzionamento regolare";
+                break;
+            case 'offline':
+                service.note = "Servizio non disponibile";
+                break;
+            case 'lento':
+                service.note = "Prestazioni ridotte";
+                break;
+            case 'manutenzione':
+                service.note = "In manutenzione programmata";
+                break;
+            default:
+                service.note = "";
+        }
+    }
+    
+    service.aggiornamento = getFormattedDateTime();
+    
+    renderServices();
+    updateStatistics();
+    updateAlertBanner();
+    
+    // Aggiungi log solo per manutenzione, rimuovendo l'aggiunta automatica per offline
+    if (service.stato === 'manutenzione' && service.previousStato !== 'manutenzione') {
+        addMaintenanceLog(service);
+    }
+    
+    // Salva le modifiche nel localStorage
+    saveDataToStorage();
+    
+    return true;
+}
+
+// Nuova funzione per aggiungere log specifici per manutenzione
+function addMaintenanceLog(service) {
+    const currentDate = new Date().toLocaleDateString('it-IT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+    
+    const newLog = {
+        "data": currentDate,
+        "tipo": "Manutenzione",
+        "descrizione": `Manutenzione programmata avviata su ${service.nome}. ${service.note}`
+    };
+    
+    addUpdateLog(newLog);
+}
+
+function addUpdateLog(newLog) {
+    if (!isUserAuthorized() && newLog.tipo !== "Stato" && newLog.tipo !== "Manutenzione") {
+        console.error("Utente non autorizzato per aggiungere log");
+        return false;
+    }
+    
+    updateLogData.unshift(newLog);
+    
+    if (updateLogData.length > 4) {
+        updateLogData.pop();
+    }
+    
+    renderUpdateLog();
+    
+    // Salva le modifiche nel localStorage
+    saveDataToStorage();
+    
+    return true;
+}
+
+function createManagementUI() {
+    if (!isUserAuthorized()) {
+        console.error("Utente non autorizzato");
+        return;
+    }
+    
+    const existingPanel = document.querySelector('.management-section');
+    if (existingPanel) {
+        existingPanel.remove();
+    }
+    
+    const managementSection = document.createElement('div');
+    managementSection.className = 'management-section';
+    managementSection.innerHTML = `
+        <div class="admin-header">
+            <h2>Pannello Amministrazione</h2>
+            <button id="logoutBtn" class="btn btn-outline-danger btn-sm">Logout</button>
+        </div>
+        <div class="management-controls">
+            <div class="form-group">
+                <label for="serviceSelect">Seleziona Servizio:</label>
+                <select id="serviceSelect" class="form-control">
+                    ${servicesData.map((service, index) => 
+                        `<option value="${index}">${service.nome}</option>`
+                    ).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="statusSelect">Nuovo Stato:</label>
+                <select id="statusSelect" class="form-control">
+                    ${Object.keys(STATUS_META).map(status => 
+                        `<option value="${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</option>`
+                    ).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="noteInput">Note (opzionale):</label>
+                <input type="text" id="noteInput" class="form-control" placeholder="Inserisci nota personalizzata">
+            </div>
+            <button id="updateStatusBtn" class="btn btn-primary">Aggiorna Stato</button>
+        </div>
+        
+        <h2>Aggiungi Log</h2>
+        <div class="log-controls">
+            <div class="form-group">
+                <label for="logTypeSelect">Tipo:</label>
+                <select id="logTypeSelect" class="form-control">
+                    ${Object.keys(LOG_TYPE_META)
+                        .filter(type => type !== 'Stato') // Rimuove la possibilità di aggiungere log di tipo 'Stato'
+                        .map(type => `<option value="${type}">${type}</option>`)
+                        .join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="logDescInput">Descrizione:</label>
+                <textarea id="logDescInput" class="form-control" rows="2" placeholder="Descrizione aggiornamento"></textarea>
+            </div>
+            <button id="addLogBtn" class="btn btn-success">Aggiungi Log</button>
+        </div>
+    `;
+    
+    const serviceGrid = document.getElementById('serviceGrid');
+    if (serviceGrid && serviceGrid.parentNode) {
+        serviceGrid.parentNode.insertBefore(managementSection, serviceGrid);
+    } else {
+        document.body.appendChild(managementSection);
+    }
+    
+    document.getElementById('updateStatusBtn').addEventListener('click', function() {
+        const serviceIndex = parseInt(document.getElementById('serviceSelect').value);
+        const newStatus = document.getElementById('statusSelect').value;
+        const customNote = document.getElementById('noteInput').value;
+        
+        changeServiceStatus(serviceIndex, newStatus, customNote);
+    });
+    
+    document.getElementById('addLogBtn').addEventListener('click', function() {
+        const logType = document.getElementById('logTypeSelect').value;
+        const logDesc = document.getElementById('logDescInput').value;
+        
+        if (!logDesc) {
+            alert('Inserisci una descrizione per il log');
+            return;
+        }
+        
+        const currentDate = new Date().toLocaleDateString('it-IT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        const newLog = {
+            "data": currentDate,
+            "tipo": logType,
+            "descrizione": logDesc
+        };
+        
+        addUpdateLog(newLog);
+        document.getElementById('logDescInput').value = ''; 
+    });
+    
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        handleLogout();
+    });
+}
+
+function restoreUserSession() {
+    const savedUser = sessionStorage.getItem('currentUser');
+    
+    if (savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            
+            if (currentUser.id && CONFIG.authorizedUsers.includes(currentUser.id)) {
+                if (currentUser.isAuthenticated && currentUser.isAdmin) {
+                    showAdminPanel();
+                    return true;
+                }
+            }
+        } catch (e) {
+            console.error("Errore nel ripristino della sessione:", e);
+        }
+    }
+    
+    createAdminButton();
+    return false;
+}
+
+function initializeStatusPage() {
+    loadDataFromStorage();
+    
+    updateStatistics();
+    renderServices();
+    renderUpdateLog();
+    renderMaintenances();
+    updateLastUpdateTime();
+    updateAlertBanner();
+    
+    restoreUserSession();
+    
+    aggiornaOrarioServizi();
+    setInterval(aggiornaOrarioServizi, CONFIG.updateInterval);
+    
+    setInterval(updateLastUpdateTime, 60000);
+}
+
+document.addEventListener('DOMContentLoaded', initializeStatusPage);
+
+const additionalStyles = document.createElement('style');
+additionalStyles.textContent = `
+/* Modern Admin Button with smooth hover effect */
+#adminButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #4361ee;
+    color: white;
+    border: none;
+    font-size: 22px;
+    box-shadow: 0 4px 14px rgba(67, 97, 238, 0.4);
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#adminButton:hover {
+    background-color: #3a56d4;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 7px 20px rgba(67, 97, 238, 0.5);
+}
+
+/* Modal overlay with slight blur effect */
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1010;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Login section with soft shadows and animations */
+.login-section {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(20px);
+    animation: slideUp 0.4s ease forwards;
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0); }
+}
+
+/* Headings with modern typography */
+.login-section h2, .management-section h2 {
+    margin-top: 0;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 15px;
+}
+
+/* Improved button layout */
+.login-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+/* Management section with card-like design */
+.management-section {
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+/* Form elements with better spacing and animations */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #334155;
+    font-size: 0.95rem;
+}
+
+/* Improved input fields */
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    background-color: #fff;
+}
+
+/* Button styles with hover effects */
+.btn {
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: #4361ee;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #3a56d4;
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #64748b;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #475569;
+    box-shadow: 0 4px 10px rgba(100, 116, 139, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Outline buttons with better transitions */
+.btn-outline-danger {
+    background-color: transparent;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ef4444;
+    color: white;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    color: #64748b;
+    border: 1px solid #64748b;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #64748b;
+    color: white;
+    box-shadow: 0 4px 10px rgba(100, 116, 139, 0.2);
+}
+
+/* Maintenance log badge with updated style */
+.log-type.manutenzione {
+    background-color: #0ea5e9;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* New styles for better user experience */
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid white;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Status indicators */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-inactive {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Tooltip styling */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: #1e293b;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+`;
+document.head.appendChild(additionalStyles);
+</script>
+</body>
+</html>
