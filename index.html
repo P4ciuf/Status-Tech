@@ -1769,6 +1769,400 @@ additionalStyles.textContent = `
 }
 `;
 document.head.appendChild(additionalStyles);
+
+// Aggiungi questa funzione per gestire l'aggiunta di manutenzioni programmate
+function addScheduledMaintenance(date, time, service, reason) {
+    if (!isUserAuthorized()) {
+        console.error("Utente non autorizzato");
+        return false;
+    }
+    
+    if (!date || !time || !service || !reason) {
+        console.error("Tutti i campi sono obbligatori");
+        return false;
+    }
+    
+    const newMaintenance = {
+        "data": date,
+        "ora": time,
+        "servizio": service,
+        "motivo": reason
+    };
+    
+    maintenanceData.push(newMaintenance);
+    maintenanceData.sort((a, b) => {
+        // Converte date italiane (DD/MM/YYYY) per il confronto
+        const [dayA, monthA, yearA] = a.data.split('/');
+        const [dayB, monthB, yearB] = b.data.split('/');
+        return new Date(yearA, monthA-1, dayA) - new Date(yearB, monthB-1, dayB);
+    });
+    
+    renderMaintenances();
+    
+    // Salva le modifiche nel localStorage
+    saveDataToStorage();
+    
+    return true;
+}
+
+// Aggiungi questa funzione per gestire l'aggiunta di manutenzioni programmate
+function addScheduledMaintenance(date, time, service, reason) {
+    if (!isUserAuthorized()) {
+        console.error("Utente non autorizzato");
+        return false;
+    }
+    
+    if (!date || !time || !service || !reason) {
+        console.error("Tutti i campi sono obbligatori");
+        return false;
+    }
+    
+    const newMaintenance = {
+        "data": date,
+        "ora": time,
+        "servizio": service,
+        "motivo": reason
+    };
+    
+    maintenanceData.push(newMaintenance);
+    maintenanceData.sort((a, b) => {
+        // Converte date italiane (DD/MM/YYYY) per il confronto
+        const [dayA, monthA, yearA] = a.data.split('/');
+        const [dayB, monthB, yearB] = b.data.split('/');
+        return new Date(yearA, monthA-1, dayA) - new Date(yearB, monthB-1, dayB);
+    });
+    
+    renderMaintenances();
+    
+    // Salva le modifiche nel localStorage
+    saveDataToStorage();
+    
+    return true;
+}
+
+// Modifica la funzione createManagementUI per aggiungere la sezione di manutenzione programmata
+function createManagementUI() {
+    if (!isUserAuthorized()) {
+        console.error("Utente non autorizzato");
+        return;
+    }
+    
+    const existingPanel = document.querySelector('.management-section');
+    if (existingPanel) {
+        existingPanel.remove();
+    }
+    
+    const managementSection = document.createElement('div');
+    managementSection.className = 'management-section';
+    managementSection.innerHTML = `
+        <div class="admin-header">
+            <h2>Pannello Amministrazione</h2>
+            <button id="logoutBtn" class="btn btn-outline-danger btn-sm">Logout</button>
+        </div>
+        <div class="management-controls">
+            <div class="form-group">
+                <label for="serviceSelect">Seleziona Servizio:</label>
+                <select id="serviceSelect" class="form-control">
+                    ${servicesData.map((service, index) => 
+                        `<option value="${index}">${service.nome}</option>`
+                    ).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="statusSelect">Nuovo Stato:</label>
+                <select id="statusSelect" class="form-control">
+                    ${Object.keys(STATUS_META).map(status => 
+                        `<option value="${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</option>`
+                    ).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="noteInput">Note (opzionale):</label>
+                <input type="text" id="noteInput" class="form-control" placeholder="Inserisci nota personalizzata">
+            </div>
+            <button id="updateStatusBtn" class="btn btn-primary">Aggiorna Stato</button>
+        </div>
+        
+        <h2>Aggiungi Log</h2>
+        <div class="log-controls">
+            <div class="form-group">
+                <label for="logTypeSelect">Tipo:</label>
+                <select id="logTypeSelect" class="form-control">
+                    ${Object.keys(LOG_TYPE_META)
+                        .filter(type => type !== 'Stato') // Rimuove la possibilità di aggiungere log di tipo 'Stato'
+                        .map(type => `<option value="${type}">${type}</option>`)
+                        .join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="logDescInput">Descrizione:</label>
+                <textarea id="logDescInput" class="form-control" rows="2" placeholder="Descrizione aggiornamento"></textarea>
+            </div>
+            <button id="addLogBtn" class="btn btn-success">Aggiungi Log</button>
+        </div>
+        
+        <h2>Programmazione Manutenzione</h2>
+        <div class="maintenance-controls">
+            <div class="form-group">
+                <label for="maintenanceDate">Data:</label>
+                <input type="text" id="maintenanceDate" class="form-control" placeholder="GG/MM/AAAA">
+            </div>
+            <div class="form-group">
+                <label for="maintenanceTime">Orario:</label>
+                <input type="text" id="maintenanceTime" class="form-control" placeholder="HH:MM - HH:MM">
+            </div>
+            <div class="form-group">
+                <label for="maintenanceService">Servizio:</label>
+                <select id="maintenanceService" class="form-control">
+                    ${servicesData.map(service => 
+                        `<option value="${service.nome}">${service.nome}</option>`
+                    ).join('')}
+                    <option value="Services Status">Services Status</option>
+                    <option value="Tutti i servizi">Tutti i servizi</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="maintenanceReason">Motivo:</label>
+                <input type="text" id="maintenanceReason" class="form-control" placeholder="Motivo manutenzione">
+            </div>
+            <button id="scheduleMaintBtn" class="btn btn-warning">Programma Manutenzione</button>
+        </div>
+        
+        <h3>Manutenzioni Programmate</h3>
+        <div class="scheduled-maintenance-list">
+            <table class="maintenance-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Orario</th>
+                        <th>Servizio</th>
+                        <th>Motivo</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody id="adminMaintenanceList">
+                    ${maintenanceData.map((maintenance, index) => `
+                        <tr>
+                            <td>${maintenance.data}</td>
+                            <td>${maintenance.ora}</td>
+                            <td>${maintenance.servizio}</td>
+                            <td>${maintenance.motivo}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger delete-maint" data-index="${index}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    const serviceGrid = document.getElementById('serviceGrid');
+    if (serviceGrid && serviceGrid.parentNode) {
+        serviceGrid.parentNode.insertBefore(managementSection, serviceGrid);
+    } else {
+        document.body.appendChild(managementSection);
+    }
+    
+    document.getElementById('updateStatusBtn').addEventListener('click', function() {
+        const serviceIndex = parseInt(document.getElementById('serviceSelect').value);
+        const newStatus = document.getElementById('statusSelect').value;
+        const customNote = document.getElementById('noteInput').value;
+        
+        changeServiceStatus(serviceIndex, newStatus, customNote);
+    });
+    
+    document.getElementById('addLogBtn').addEventListener('click', function() {
+        const logType = document.getElementById('logTypeSelect').value;
+        const logDesc = document.getElementById('logDescInput').value;
+        
+        if (!logDesc) {
+            alert('Inserisci una descrizione per il log');
+            return;
+        }
+        
+        const currentDate = new Date().toLocaleDateString('it-IT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        const newLog = {
+            "data": currentDate,
+            "tipo": logType,
+            "descrizione": logDesc
+        };
+        
+        addUpdateLog(newLog);
+        document.getElementById('logDescInput').value = ''; 
+    });
+    
+    document.getElementById('scheduleMaintBtn').addEventListener('click', function() {
+        const date = document.getElementById('maintenanceDate').value;
+        const time = document.getElementById('maintenanceTime').value;
+        const service = document.getElementById('maintenanceService').value;
+        const reason = document.getElementById('maintenanceReason').value;
+        
+        if (!date || !time || !service || !reason) {
+            alert('Compila tutti i campi per programmare la manutenzione');
+            return;
+        }
+        
+        // Validazione del formato data
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!dateRegex.test(date)) {
+            alert('Formato data non valido. Usa GG/MM/AAAA');
+            return;
+        }
+        
+        // Validazione del formato orario
+        const timeRegex = /^\d{2}:\d{2} - \d{2}:\d{2}$/;
+        if (!timeRegex.test(time)) {
+            alert('Formato orario non valido. Usa HH:MM - HH:MM');
+            return;
+        }
+        
+        if (addScheduledMaintenance(date, time, service, reason)) {
+            // Resetta i campi del form
+            document.getElementById('maintenanceDate').value = '';
+            document.getElementById('maintenanceTime').value = '';
+            document.getElementById('maintenanceReason').value = '';
+            
+            // Aggiorna la lista nell'admin panel
+            updateAdminMaintenanceList();
+            
+            // Aggiungi un log per la manutenzione programmata
+            const newLog = {
+                "data": new Date().toLocaleDateString('it-IT', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }),
+                "tipo": "Manutenzione",
+                "descrizione": `Manutenzione programmata per ${service} il ${date} dalle ${time}. Motivo: ${reason}`
+            };
+            
+            addUpdateLog(newLog);
+        }
+    });
+    
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        handleLogout();
+    });
+    
+    // Aggiungi event listener per i pulsanti di eliminazione
+    setupDeleteMaintenanceButtons();
+}
+
+// Funzione per aggiornare la lista delle manutenzioni nell'admin panel
+function updateAdminMaintenanceList() {
+    const adminMaintenanceList = document.getElementById('adminMaintenanceList');
+    if (!adminMaintenanceList) return;
+    
+    adminMaintenanceList.innerHTML = '';
+    
+    maintenanceData.forEach((maintenance, index) => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td>${maintenance.data}</td>
+            <td>${maintenance.ora}</td>
+            <td>${maintenance.servizio}</td>
+            <td>${maintenance.motivo}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-danger delete-maint" data-index="${index}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        
+        adminMaintenanceList.appendChild(row);
+    });
+    
+    setupDeleteMaintenanceButtons();
+}
+
+// Funzione per gestire i pulsanti di eliminazione delle manutenzioni
+function setupDeleteMaintenanceButtons() {
+    const deleteButtons = document.querySelectorAll('.delete-maint');
+    
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            
+            if (confirm('Sei sicuro di voler eliminare questa manutenzione programmata?')) {
+                maintenanceData.splice(index, 1);
+                saveDataToStorage();
+                renderMaintenances();
+                updateAdminMaintenanceList();
+            }
+        });
+    });
+}
+
+// Aggiungi uno stile aggiuntivo per la tabella delle manutenzioni nell'admin panel
+const maintenanceTableStyle = document.createElement('style');
+maintenanceTableStyle.textContent = `
+.maintenance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.maintenance-table th, .maintenance-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.maintenance-table th {
+    background-color: #f1f5f9;
+    color: #334155;
+    font-weight: 600;
+}
+
+.maintenance-table tr:hover {
+    background-color: #f8fafc;
+}
+
+.btn-outline-danger {
+    padding: 4px 8px;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    background-color: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #d97706;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+    transform: translateY(-1px);
+}
+
+.scheduled-maintenance-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-top: 15px;
+    padding: 5px;
+}
+`;
 </script>
 </body>
 </html>
